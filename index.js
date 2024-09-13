@@ -5,7 +5,7 @@ let meta = {
       checked: false
 }
 
-let metas = [ meta];
+let metas = [ meta ];
 
 const cadastrarMeta = async () => {
       const meta = await input({message: "Digite a meta:"})
@@ -26,8 +26,8 @@ const listarMetas = async () => {
             choices: [...metas],
             instructions: false,
       })
-
-      if(respostas.length == 0){
+      
+      if(respostas.length < 0){
             console.log("Nenhuma meta selecionada!")
             return
       }
@@ -40,12 +40,27 @@ const listarMetas = async () => {
             const meta = metas.find((m) => {
                   return m.value == resposta
             })
-
-            meta.checked = true;
+            meta.checked = true;      
       })
-
+      
       console.log("Metas(s) marcada(s) como concluída(s)")
       
+}
+
+const metasRealizadas = async () => {
+      const realizadas = metas.filter((meta) => {
+            return meta.checked
+      })
+
+      if(realizadas.length == 0){
+            console.log("Não exitem metas realizada :'(");
+            return
+      }
+
+      await select({
+            message: "Metas realizadas",
+            choices: [...realizadas]
+      })
 }
 
 const start = async () => {
@@ -63,6 +78,10 @@ const start = async () => {
                               value: "listar"
                         },
                         {
+                              name: "Metas realizadas",
+                              value: "realizadas"
+                        },
+                        {
                               name: "Sair",
                               value: "sair"
                         }
@@ -71,11 +90,14 @@ const start = async () => {
 
             switch(opcao){
                   case "cadastrar":
-                        await cadastrarMeta()
+                        await cadastrarMeta();
                         console.log(metas);
                         break
                   case "listar":
-                        await listarMetas()
+                        await listarMetas();
+                        break
+                  case "realizadas":
+                        await metasRealizadas();
                         break
                   case "sair":
                         return
